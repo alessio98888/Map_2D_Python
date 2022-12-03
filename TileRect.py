@@ -1,4 +1,6 @@
-﻿from Coord2D import Coord2D
+﻿import pygame
+
+from Coord2D import Coord2D
 
 
 class TileRect:
@@ -18,11 +20,13 @@ class TileRect:
         self.setWidth(Coord2D.mapFromWorldToPlaneX(self.getWidth(), worldWidth, planeWidth))
         self.setHeight(Coord2D.mapFromWorldToPlaneY(self.getHeight(), worldHeight, planeHeight))
 
-    def draw(self, g, color):
-        prevColor = g.getColor()
-        g.setColor(color)
-        g.fillRect(self.getUpperLeft().getX(), self.getUpperLeft().getY(), self.getWidth(), self.getHeight())
-        g.setColor(prevColor)
+    def draw(self, screen, color):
+
+        pygame.draw.rect(screen, color,
+                         pygame.Rect(
+                             self.getUpperLeft().getX(), self.getUpperLeft().getY(), self.getWidth(), self.getHeight())
+                         )
+
 
     def getUpperLeft(self):
         return self._upperLeft

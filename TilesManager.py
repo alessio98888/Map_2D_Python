@@ -82,15 +82,15 @@ class TilesManager:
 
             pygame.draw.line(screen, (0, 0, 0), (mappedX, 0), (mappedX, planeHeight))
             pygame.draw.line(screen, (0, 0, 0), (0, mappedY), (planeWidth, mappedY))
-            pygame.display.flip()
 
-    def fillCorrespondingTileWithColor(self, g, worldCoord, planeWidth, planeHeight, color):
-        self._drawTileToPlane(g, self.getCorrespondingTile(worldCoord), planeWidth, planeHeight, color)
 
-    def _drawTileToPlane(self, g, worldTile, planeWidth, planeHeight, color):
+    def fillCorrespondingTileWithColor(self, screen, worldCoord, planeWidth, planeHeight, color):
+        self._drawTileToPlane(screen, self.getCorrespondingTile(worldCoord), planeWidth, planeHeight, color)
+
+    def _drawTileToPlane(self, screen, worldTile, planeWidth, planeHeight, color):
         tileRect = TileRect(worldTile, self.getTileWidth(), self.getTileHeight())
         tileRect.toPlane(self._worldWidth, self._worldHeight, planeWidth, planeHeight)
-        tileRect.draw(g, color)
+        tileRect.draw(screen, color)
 
     def getCorrespondingTile(self, worldCoord):
         correspondingTile = Coord2D()

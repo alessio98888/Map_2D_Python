@@ -1,36 +1,36 @@
 ﻿import math
 
+import pygame
+
+from Coord2D import Coord2D
+from Utils import Utils
+
+
+class Circle:
+    # Center of circle coordinates
+    def __init__(self, x, y, diameter, color):
+        self.coord = Coord2D(x, y)
+        self.diameter = diameter
+        self.color = color
+
+    def coordThatIndicatesCenter(self):
+        return Coord2D(self.coord.getX(),
+                       self.coord.getY())
+
+    def toPlane(self, worldWidth, worldHeight, planeWidth, planeHeight):
+        mappedCoord = self.coordThatIndicatesCenter().mapFromWorldToPlane(worldWidth, worldHeight, planeWidth,
+                                                                          planeHeight)
+        planeDiameter = Utils.mapRangeToRange(self.diameter, 0, worldWidth, 0, planeWidth + planeHeight)
+        return Circle(mappedCoord.getX(), mappedCoord.getY(), planeDiameter, self.color)
+
+
 class CircleDrawer:
-
-    class Circle:
-        # Center of circle coordinates
-        def __init__(self, x, y, diameter, color):
-            #instance fields found by Java to Python Converter:
-            self.coord = None
-            self.diameter = 0
-            self.color = None
-
-            self.coord = Coord2D(x, y)
-            self.diameter = diameter
-            self.color = color
-
-        def coordThatIndicatesCenter(self, coordinate):
-            return coordinate - math.trunc(self.diameter / float(2))
-        def coordThatIndicatesCenter(self):
-            return Coord2D(self.coord.getX() - math.trunc(self.diameter / float(2)), self.coord.getY() - math.trunc(self.diameter / float(2)))
-
-        def toPlane(self, worldWidth, worldHeight, planeWidth, planeHeight):
-            mappedCoord = self.coordThatIndicatesCenter().mapFromWorldToPlane(worldWidth, worldHeight, planeWidth, planeHeight)
-            planeDiameter = Utils.mapRangeToRange(self.diameter, 0, worldWidth, 0, planeWidth + planeHeight)
-            return Circle(mappedCoord.getX(), mappedCoord.getY(), planeDiameter, self.color)
-
-
 
     def _initCircles(self):
         self.circles = []
 
     def __init__(self, worldWidth, worldHeight):
-        #instance fields found by Java to Python Converter:
+        # instance fields found by Java to Python Converter:
         self.worldWidth = 0
         self.worldHeight = 0
         self.circles = None
@@ -38,18 +38,21 @@ class CircleDrawer:
         self.worldWidth = worldWidth
         self.worldHeight = worldHeight
         self._initCircles()
+
     def addCircleToPlane(self, c, planeWidth, planeHeight):
         self.circles.append(c.toPlane(self.worldWidth, self.worldHeight, planeWidth, planeHeight))
-    def draw(self, g): # draw must be called by paintComponent of the panel
+
+    def draw(self, screen):
         for c in self.circles:
-            g.fillOval(c.coord.getX(), c.coord.getY(), c.diameter, c.diameter)
+            pos = c.coord.getX(), c.coord.getY()
+            pygame.draw.circle(screen, (0, 0, 255), pos, c.diameter)
+            pygame.display.flip()
 
-    def drawCircleToPlane(self, g, circleToDraw, planeWidth, planeHeight): # draw must be called by paintComponent of the panel
-        prevColor = g.getColor()
-        g.setColor(circleToDraw.color)
+    def drawCircleToPlane(self, screen, circleToDraw, planeWidth,
+                          planeHeight):  # draw must be called by paintComponent of the panel
+
         cToPlane = circleToDraw.toPlane(self.worldWidth, self.worldHeight, planeWidth, planeHeight)
-        g.fillOval(cToPlane.coord.getX(), cToPlane.coord.getY(), cToPlane.diameter, cToPlane.diameter)
-        g.setColor(prevColor)
 
-
+        pos = cToPlane.coord.getX(), cToPlane.coord.getY()
+        pygame.draw.circle(screen, (0, 0, 255), pos, cToPlane.diameter)
 

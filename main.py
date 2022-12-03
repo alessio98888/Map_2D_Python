@@ -6,16 +6,16 @@ import random
 import pygame
 from pygame.locals import *
 
+from CircleDrawer import CircleDrawer, Circle
 from Coord2D import Coord2D
 from Path import Path
 from SimpleTrafficAnalysis import SimpleTrafficAnalysis
 from SpaceTimeLocation import SpaceTimeLocation
 from TilesManager import TilesManager
 
-NUMBER_OF_TILES = 30
+NUMBER_OF_TILES = 10
 WORLD_WIDTH = 10000
 WORLD_HEIGHT = 10000
-
 
 simulatedPath = Path()
 
@@ -24,13 +24,13 @@ initialY = math.trunc(WORLD_HEIGHT / float(2))
 currX = initialX
 currY = initialY
 
-amountOfDelta = 500
+amountOfDelta = 100
 timeStamp = datetime.now()
 
 for n in range(0, 100):
 
-    deltaX = random.randint(math.trunc(amountOfDelta / float(2)), amountOfDelta)
-    deltaY = random.randint(math.trunc(amountOfDelta / float(2)), amountOfDelta)
+    deltaX = random.randint(-math.trunc(amountOfDelta / float(2)), amountOfDelta)
+    deltaY = random.randint(-math.trunc(amountOfDelta / float(2)), amountOfDelta)
     currX += deltaX
     currY += deltaY
 
@@ -76,8 +76,11 @@ while True:
 
     for tileK in tilesTraffic.keys():
         trafficColor = trafficAnalysis.getTrafficColor(tileK)
-        tilesManager.fillCorrespondingTileWithColor(g, tileK, getWidth(), getHeight(), trafficColor)
+        tilesManager.fillCorrespondingTileWithColor(screen, tileK, screen.get_width(), screen.get_height(),
+                                                    trafficColor)
 
-    for l in Main.p.getPath():
-        circleDrawer = CircleDrawer(ImageJPanel.WORLDWIDTH, ImageJPanel.WORLDHEIGHT)
-        circleDrawer.drawCircleToPlane(g, CircleDrawer.Circle(l.getSpace().getX(), l.getSpace().getY(), 30, Color.BLUE), getWidth(), getHeight())
+    for l in simulatedPath.getPath():
+        circleDrawer = CircleDrawer(WORLD_WIDTH, WORLD_HEIGHT)
+        circleDrawer.drawCircleToPlane(screen, Circle(l.getSpace().getX(), l.getSpace().getY(), 10, (0, 0, 255)),
+                                       screen.get_width(), screen.get_height())
+    pygame.display.flip()
